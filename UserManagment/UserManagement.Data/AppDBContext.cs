@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 
+
+
 namespace UserManagement.Data;
 
 public class AppDBContext : DbContext
@@ -11,5 +13,5 @@ public class AppDBContext : DbContext
     {
         
     }
-    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<User> Users => Set<User>();
 }
