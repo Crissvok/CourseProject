@@ -1,0 +1,11 @@
+CREATE DATABASE IF NOT EXISTS usermanagement_db;
+USE usermanagement_db;
+
+CREATE TABLE Users (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    IsActive TINYINT(1) NOT NULL DEFAULT 1
+);
