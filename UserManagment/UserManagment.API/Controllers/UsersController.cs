@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using UserManagement.Data;
 
 namespace UserManagment.API.Controllers;
@@ -9,52 +7,29 @@ namespace UserManagment.API.Controllers;
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly AppDbContext _context;
-
-    public UsersController(AppDbContext context)
+    
+    private static readonly List<User> _users = new()
     {
-        _context = context;
-    }
+        new User { Id = 1, Name = "admin", Email = "admin@system.ru", Password = "hash_123", CreatedAt = DateTime.UtcNow, IsActive = true },
+        new User { Id = 2, Name = "ivan_petrov", Email = "ivan@mail.ru", Password = "hash_456", CreatedAt = DateTime.UtcNow, IsActive = true }
+    };
 
+    
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+    public ActionResult<IEnumerable<User>> GetUsers()
     {
-        return await _context.Users.ToListAsync();
+        return Ok(_users);
     }
 
+    
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(int id)
+    public ActionResult<User> GetUser(int id)
     {
-        var user = await _context.Users.FindAsync(id);
+        var user = _users.FirstOrDefault(u => u.Id == id);
         if (user == null)
         {
             return NotFound("Пользователь не найден");
         }
-        return user;
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<User>> CreateUser(User user)
-    {
-        user.CreatedAt = DateTime.UtcNow;
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUser(int id)
-    {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null)
-        {
-            return NotFound("Пользователь не найден");
-        }
-
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        return Ok(user);
     }
 }
