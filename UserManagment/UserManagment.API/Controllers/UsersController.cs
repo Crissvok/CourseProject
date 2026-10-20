@@ -1,60 +1,38 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using UserManagement.Data;
 
-namespace UserManagment.API.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class UsersController : ControllerBase
+namespace UserManagment.API.Controllers
 {
-    private readonly AppDbContext _context;
-
-    public UsersController(AppDbContext context)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UsersController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly AppDbContext _context;
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-    {
-        return await _context.Users.ToListAsync();
-    }
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(int id)
-    {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null)
+        public UsersController(AppDbContext context)
         {
-            return NotFound("Пользователь не найден");
-        }
-        return user;
-    }
-
-    [HttpPost]
-    public async Task<ActionResult<User>> CreateUser(User user)
-    {
-        user.CreatedAt = DateTime.UtcNow;
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUser(int id)
-    {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null)
-        {
-            return NotFound("Пользователь не найден");
+            _context = context;
         }
 
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetAll()
+        {
+            var users = await _context.Users.ToListAsync();
+            return Ok(users);
+        }
 
-        return NoContent();
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetById(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound(new { message = $"Пользователь с ID {id} не найден" });
+            }
+
+            return Ok(user);
+        }
     }
 }
