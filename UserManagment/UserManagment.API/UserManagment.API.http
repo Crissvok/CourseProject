@@ -1,6 +1,66 @@
 @UserManagment.API_HostAddress = http://localhost:5197
-
+### getAll
 GET {{UserManagment.API_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###
+### 1. POST: Создание нового пользователя
+POST {{UserManagment.API_HostAddress}}/api/users
+Content-Type: application/json
+
+{
+  "name": "dmitry_smirnov",
+  "email": "dmitry@example.com",
+  "password": "strong_password_777"
+}
+
+### 2. GET: Проверка созданного пользователя (получение по ID = 3)
+GET {{UserManagment.API_HostAddress}}/api/users/3
+Accept: application/json
+
+### 3. PUT: Редактирование созданного пользователя (изменение почты и пароля)
+PUT {{UserManagment.API_HostAddress}}/api/users/3
+Content-Type: application/json
+
+{
+  "name": "dmitry_smirnov",
+  "email": "dmitry_new@example.com",
+  "password": "updated_password_888"
+}
+
+### 4. DELETE: Блокировка (деактивация) пользователя
+DELETE {{UserManagment.API_HostAddress}}/api/users/3
+Accept: application/json
+
+### 5. GET: Повторная проверка пользователя (убедиться, что isActive стал false)
+GET {{UserManagment.API_HostAddress}}/api/users/3
+Accept: application/json
+
+### 6. ТЕСТ ОШИБКИ 1: Попытка создать пользователя с уже занятым логином (Конфликт 409)
+POST {{UserManagment.API_HostAddress}}/api/users
+Content-Type: application/json
+
+{
+  "name": "admin",
+  "email": "another_admin@example.com",
+  "password": "password"
+}
+
+### 7. ТЕСТ ОШИБКИ 2: Попытка обновить несуществующего пользователя (404 Not Found)
+PUT {{UserManagment.API_HostAddress}}/api/users/9999
+Content-Type: application/json
+
+{
+  "name": "ghost",
+  "email": "ghost@example.com"
+}
+### 1. Блокировка пользователя (поле IsActive станет 0/false)
+PUT {{UserManagment.API_HostAddress}}/api/users/3/block
+Accept: application/json
+
+### 2. Разблокировка пользователя обратно (поле IsActive станет 1/true)
+PUT {{UserManagment.API_HostAddress}}/api/users/3/unblock
+Accept: application/json
+
+### 3. Полное удаление пользователя (строка физически исчезнет из MySQL)
+DELETE {{UserManagment.API_HostAddress}}/api/users/3
+Accept: application/json

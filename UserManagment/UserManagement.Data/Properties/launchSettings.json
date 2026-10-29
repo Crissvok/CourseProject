@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "UserManagement.Data": {
+      "commandName": "Project"
+    },
+    "Профиль 1": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\st_ak\\source\\repos\\Crissvok\\RPMPR\\SPApi\\SPApi.csproj"
+    }
+  }
+}
