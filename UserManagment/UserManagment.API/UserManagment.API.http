@@ -1,6 +1,7 @@
-@UserManagment.API_HostAddress = http://localhost:5197
+@UserManagment.API_HostAddress = http://localhost:5000 
+# хост менять по нужде
 ### getAll
-GET {{UserManagment.API_HostAddress}}/weatherforecast/
+GET {{UserManagment.API_HostAddress}}/api/users
 Accept: application/json
 
 ### 1. POST: Создание нового пользователя
@@ -54,13 +55,13 @@ Content-Type: application/json
   "email": "ghost@example.com"
 }
 ### 1. Блокировка пользователя (поле IsActive станет 0/false)
-PUT {{UserManagment.API_HostAddress}}/api/users/3/block
+PUT {{UserManagment.API_HostAddress}}/api/users/4/block
 Accept: application/json
 
 ### 2. Разблокировка пользователя обратно (поле IsActive станет 1/true)
-PUT {{UserManagment.API_HostAddress}}/api/users/3/unblock
+PUT {{UserManagment.API_HostAddress}}/api/users/4/unblock
 Accept: application/json
 
 ### 3. Полное удаление пользователя (строка физически исчезнет из MySQL)
-DELETE {{UserManagment.API_HostAddress}}/api/users/3
+DELETE {{UserManagment.API_HostAddress}}/api/users/4
 Accept: application/json
