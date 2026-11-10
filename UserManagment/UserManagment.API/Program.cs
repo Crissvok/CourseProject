@@ -9,12 +9,11 @@ builder.Services.AddControllers();
 // 1. Проверяем доступность локального MySQL
 bool isMySqlRunning = IsPortOpen("localhost", 3306);
 var mySqlConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 30));
 
 if (isMySqlRunning)
 {
     builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseMySql(mySqlConnectionString, serverVersion));
+        options.UseMySQL(mySqlConnectionString!));
 }
 else
 {
