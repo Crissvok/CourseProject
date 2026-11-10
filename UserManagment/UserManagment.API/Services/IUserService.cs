@@ -12,5 +12,6 @@ namespace UserManagment.API.Services
         Task<(bool Success, string? Error)> ChangeRoleAsync(int id, string newRole);
         Task<(bool Success, string? Error)> SetActiveStatusAsync(int id, bool isActive);
         Task<(bool Success, string? Error)> HardDeleteAsync(int id);
+        Task<IEnumerable<AuditLog>> GetAuditLogsAsync(int count = 50);
     }
 }

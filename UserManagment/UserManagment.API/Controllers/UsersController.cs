@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserManagement.Data;
 using UserManagment.API.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace UserManagment.API.Controllers
 {
@@ -15,7 +16,7 @@ namespace UserManagment.API.Controllers
         {
             _userService = userService;
         }
-
+        // Авторизация
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -42,7 +43,7 @@ namespace UserManagment.API.Controllers
                 }
             });
         }
-
+        //Общий Get
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAll([FromQuery] string? search, [FromQuery] bool? isActive, [FromQuery] string? role)
@@ -50,7 +51,7 @@ namespace UserManagment.API.Controllers
             var users = await _userService.GetAllAsync(search, isActive, role);
             return Ok(users);
         }
-
+        //Get по Id
         [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetById(int id)
@@ -61,7 +62,7 @@ namespace UserManagment.API.Controllers
 
             return Ok(user);
         }
-
+        //Создание учётки
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<User>> Create([FromBody] User user)
@@ -77,7 +78,7 @@ namespace UserManagment.API.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = createdUser!.Id }, createdUser);
         }
-
+        //Изменение учётки
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] User updatedUser)
@@ -96,7 +97,7 @@ namespace UserManagment.API.Controllers
 
             return Ok(user);
         }
-
+        //Смена роли
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}/role")]
         public async Task<IActionResult> ChangeRole(int id, [FromBody] ChangeRoleRequest request)
@@ -112,7 +113,7 @@ namespace UserManagment.API.Controllers
 
             return Ok(new { message = $"Роль пользователя с ID {id} успешно изменена на '{request.Role}'." });
         }
-
+        //Блокировка учётки
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}/block")]
         public async Task<IActionResult> Block(int id)
@@ -123,7 +124,7 @@ namespace UserManagment.API.Controllers
 
             return Ok(new { message = $"Пользователь с ID {id} успешно заблокирован." });
         }
-
+        //Разблокировка учётки
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}/unblock")]
         public async Task<IActionResult> Unblock(int id)
@@ -134,7 +135,7 @@ namespace UserManagment.API.Controllers
 
             return Ok(new { message = $"Пользователь с ID {id} успешно разблокирован." });
         }
-
+        //Полное удаление учётки пользователь
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> HardDelete(int id)
@@ -144,6 +145,17 @@ namespace UserManagment.API.Controllers
                 return NotFound(new { message = error });
 
             return Ok(new { message = $"Пользователь с ID {id} полностью удален из базы данных." });
+        }
+        //Просомтр логов
+        [Authorize(Roles = "Admin")]
+        [HttpGet("audit")]
+        public async Task<IActionResult> GetAuditLogs([FromServices] AppDbContext context)
+        {
+            var logs = await context.AuditLogs
+                .OrderByDescending(a => a.Timestamp)
+                .Take(50)
+                .ToListAsync<AuditLog>();
+            return Ok(logs);
         }
     }
 

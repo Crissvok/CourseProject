@@ -9,6 +9,7 @@ namespace UserManagement.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -55,6 +56,15 @@ namespace UserManagement.Data
                     }
                 );
             });
+            modelBuilder.Entity<AuditLog>(entity =>
+            {
+                entity.HasKey(a => a.Id);
+                entity.Property(a => a.Action).IsRequired().HasMaxLength(100);
+                entity.Property(a => a.Details).HasMaxLength(1000);
+                entity.Property(a => a.Timestamp).IsRequired();
+            });
+
+
         }
     }
 }

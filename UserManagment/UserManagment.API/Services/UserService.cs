@@ -83,7 +83,7 @@ namespace UserManagment.API.Services
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
-
+            await LogActionAsync(user.Id, "UserCreated", $"Создан пользователь '{user.Name}' с ролью '{user.Role}'");
             return (user, null);
         }
 
@@ -109,6 +109,7 @@ namespace UserManagment.API.Services
                 user.Password = updatedUser.Password;
 
             await _context.SaveChangesAsync();
+            await LogActionAsync(user.Id, "UserUpdated", $"Обновлены данные пользователя '{user.Name}'");
             return (user, null);
         }
 
@@ -123,6 +124,7 @@ namespace UserManagment.API.Services
 
             user.Role = newRole;
             await _context.SaveChangesAsync();
+            await LogActionAsync(user.Id, "RoleChanged", $"Роль пользователя изменена на '{newRole}'");
             return (true, null);
         }
 
@@ -134,6 +136,8 @@ namespace UserManagment.API.Services
 
             user.IsActive = isActive;
             await _context.SaveChangesAsync();
+            var statusText = isActive ? "разблокирован" : "заблокирован";
+            await LogActionAsync(user.Id, isActive ? "UserUnblocked" : "UserBlocked", $"Пользователь {statusText}");
             return (true, null);
         }
 
@@ -145,7 +149,9 @@ namespace UserManagment.API.Services
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+            await LogActionAsync(user.Id, "UserDeleted", $"Пользователь '{user.Name}' полностью удален из базы данных");
             return (true, null);
+            
         }
 
         private string GenerateJwtToken(User user)
@@ -170,10 +176,32 @@ namespace UserManagment.API.Services
                 issuer: jwtIssuer,
                 audience: jwtAudience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(4),
+                expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private async Task LogActionAsync(int? userId, string action, string details)
+        {
+            var log = new AuditLog
+            {
+                UserId = userId,
+                Action = action,
+                Details = details,
+                Timestamp = DateTime.UtcNow
+            };
+            await _context.AuditLogs.AddAsync(log);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<AuditLog>> GetAuditLogsAsync(int count = 50)
+        {
+            return await _context.AuditLogs
+                .AsNoTracking()
+                .OrderByDescending(a => a.Timestamp)
+                .Take(count)
+                .ToListAsync();
         }
     }
 }
