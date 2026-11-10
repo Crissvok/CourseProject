@@ -23,6 +23,7 @@ namespace UserManagement.Data
                 entity.Property(u => u.Name).IsRequired().HasMaxLength(100);
                 entity.Property(u => u.Email).IsRequired().HasMaxLength(150);
                 entity.Property(u => u.Password).IsRequired().HasMaxLength(255);
+                entity.Property(u => u.Role).IsRequired().HasMaxLength(50).HasDefaultValue("User");
                 entity.Property(u => u.CreatedAt).IsRequired();
                 entity.Property(u => u.IsActive).IsRequired().HasDefaultValue(true);
 
@@ -38,6 +39,7 @@ namespace UserManagement.Data
                         Name = "admin",
                         Email = "admin@example.com",
                         Password = "admin_password_123",
+                        Role = "Admin",
                         CreatedAt = new DateTime(2026, 1, 1, 10, 0, 0),
                         IsActive = true
                     },
@@ -47,6 +49,7 @@ namespace UserManagement.Data
                         Name = "ivan_petrov",
                         Email = "ivan@example.com",
                         Password = "ivan_password_456",
+                        Role = "User",
                         CreatedAt = new DateTime(2026, 1, 2, 14, 30, 0),
                         IsActive = true
                     }

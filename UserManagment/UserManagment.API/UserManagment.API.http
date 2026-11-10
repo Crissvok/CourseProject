@@ -8,13 +8,13 @@ POST {{UserManagment.API_HostAddress}}/api/users
 Content-Type: application/json
 
 {
-  "name": "dmitry_smirnov",
+  "name": "remember 1",
   "email": "dmitry@example.com",
   "password": "strong_password_777"
 }
 
 ### 2. GET: Проверка созданного пользователя (получение по ID = 3)
-GET {{UserManagment.API_HostAddress}}/api/users/3
+GET {{UserManagment.API_HostAddress}}/api/users/4
 Accept: application/json
 
 ### 3. PUT: Редактирование созданного пользователя (изменение почты и пароля)

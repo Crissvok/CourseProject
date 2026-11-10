@@ -1,12 +1,37 @@
 using System.Net.Sockets;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.Data;
+using UserManagment.API.Services;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(); // Регистрация контроллеров
 
-// 1. Проверяем доступность локального MySQL
+builder.Services.AddScoped<IUserService, UserService>(); // Регистрация сервисов
+
+//1. Настройка jwt токеннов авторизации
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "SuperSecretKeyForUserManagementCourseProject2026!";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "UserManagementAPI";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "UserManagementClient";
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
+    ValidIssuer = jwtIssuer,
+    ValidAudience = jwtAudience,
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+    ClockSkew = TimeSpan.Zero
+});
+
+builder.Services.AddAuthorization();
+
+//2. Проверяем доступность локального MySQL
 bool isMySqlRunning = IsPortOpen("localhost", 3306);
 var mySqlConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -21,9 +46,11 @@ else
         options.UseSqlite("Data Source=usermanagement_db.sqlite"));
 }
 
+
+
 var app = builder.Build();
 
-// 2. Инициализация и автоматический перенос из SQLite в MySQL
+//3. Инициализация и автоматический перенос из SQLite в MySQL
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -79,8 +106,9 @@ using (var scope = app.Services.CreateScope())
         logger.LogError($"Ошибка при инициализации/миграции БД: {ex.Message}");
     }
 }
-
+//4. Запус всего и вся
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
