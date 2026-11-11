@@ -5,4 +5,9 @@
 Курсовой проект по проектированию и разработке серверного модуля управления пользователями на базе ASP.NET Core и Entity Framework Core.
 ---
 
-# Модуль управления учётными записями пользователей (UserManagement)
+# Что нужно для запуска
+1. git clone https://github.com/Crissvok/CourseProject
+2. Открыть папку CourseProject через visual studio
+3. cd ./UserManagment\UserManagment.API
+4. dotnet run --urls "http://localhost:5197"
+5. Проверить запросы в UserManagment.API.http
