@@ -6,10 +6,15 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using Microsoft.AspNetCore.OpenApi;
+using Mysqlx.Datatypes;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(); // Регистрация контроллеров
+
+builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IUserService, UserService>(); // Регистрация сервисов
 
@@ -116,6 +121,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapOpenApi();
+app.MapScalarApiReference();
 app.Run();
 
 static bool IsPortOpen(string host, int port)
