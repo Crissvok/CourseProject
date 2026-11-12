@@ -1,7 +1,7 @@
 @UserManagment.API_HostAddress = http://localhost:5197
 
 # Сюда токен
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc5NDMyMjE0NywiaXNzIjoiVXNlck1hbmFnZW1lbnRBUEkiLCJhdWQiOiJVc2VyTWFuYWdlbWVudENsaWVudCJ9.KqrvDA-m9JF14443oNGRNWdRptEbOSigjRG7jZt77k8
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiIxIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc5NDM3MjA5NSwiaXNzIjoiVXNlck1hbmFnZW1lbnRBUEkiLCJhdWQiOiJVc2VyTWFuYWdlbWVudENsaWVudCJ9.3rEPuK8lvV19NGJSsp0bUmdJjq-yRL4aX_uD_CiJuG8
 ### 1. Логин под администратором
 POST {{UserManagment.API_HostAddress}}/api/users/login
 Content-Type: application/json
@@ -17,7 +17,7 @@ Authorization: Bearer {{adminToken}}
 Accept: application/json
 
 ### 3. Проверка фильтрации и поиска
-GET {{UserManagment.API_HostAddress}}/api/users?search=remember&isActive=true
+GET {{UserManagment.API_HostAddress}}/api/users?search=ivan&isActive=true
 Authorization: Bearer {{adminToken}}
 Accept: application/json
 
@@ -27,19 +27,19 @@ Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
-  "name": "New user",
-  "email": "tseter@example.com",
+  "name": "Hacker",
+  "email": "Hacker@vzlom.hack",
   "password": "strong_password_1235436",
   "role": "User"
 }
 
 ### 5. Получение созданного пользователя по ID
-GET {{UserManagment.API_HostAddress}}/api/users/4
+GET {{UserManagment.API_HostAddress}}/api/users/3
 Authorization: Bearer {{adminToken}}
 Accept: application/json
 
 ### 6. Смена роли пользователя на Admin
-PUT {{UserManagment.API_HostAddress}}/api/users/4/role
+PUT {{UserManagment.API_HostAddress}}/api/users/3/role
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
@@ -57,12 +57,12 @@ POST {{UserManagment.API_HostAddress}}/api/users/login
 Content-Type: application/json
 
 {
-  "username": "remember 1",
-  "password": "strong_password_777"
+  "username": "Hacker",
+  "password": "strong_password_1235436"
 }
 
 ### 9. Разблокировка пользователя
-PUT {{UserManagment.API_HostAddress}}/api/users/3/unblock
+PUT {{UserManagment.API_HostAddress}}/api/users/4/unblock
 Authorization: Bearer {{adminToken}}
 Accept: application/json
 
@@ -72,6 +72,6 @@ Authorization: Bearer {{adminToken}}
 Accept: application/json
 
 ### 11. Физическое удаление пользователя
-DELETE {{UserManagment.API_HostAddress}}/api/users/3
+DELETE {{UserManagment.API_HostAddress}}/api/users/4
 Authorization: Bearer {{adminToken}}
 Accept: application/json
